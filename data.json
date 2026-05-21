@@ -11,14 +11,14 @@
       "name": "汇总铝 / A00铝锭",
       "price": 24210,
       "unit": "元/吨",
-      "low52w": 19850,
-      "high52w": 25500,
-      "suggestion": "观望",
+      "low52w": 20137,
+      "high52w": 25273,
+      "suggestion": "高位观望",
       "suggestionType": "flat",
-      "sourceName": "南海有色网",
-      "sourceUrl": "https://www.nanhai123.com",
+      "sourceName": "生意社",
+      "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.008,
-      "chartTrend": 0.02
+      "chartTrend": -0.0079
     },
     {
       "id": "adc12",
@@ -58,12 +58,12 @@
       "unit": "元/克",
       "low52w": 752,
       "high52w": 1243,
-      "suggestion": "暂缓采购",
-      "suggestionType": "down",
+      "suggestion": "观望",
+      "suggestionType": "flat",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.012,
-      "chartTrend": -0.065
+      "chartTrend": -0.0157
     },
     {
       "id": "silver",
@@ -78,37 +78,37 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": 0.043
+      "chartTrend": 0.0429
     },
     {
       "id": "copper",
       "group": "基础有色金属",
       "name": "铜",
-      "price": 105220,
+      "price": 103398,
       "unit": "元/吨",
-      "low52w": 93007,
+      "low52w": 78055,
       "high52w": 108573,
       "suggestion": "高位观望",
-      "suggestionType": "down",
+      "suggestionType": "flat",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.012,
-      "chartTrend": 0.04
+      "chartTrend": 0.0187
     },
     {
       "id": "tin",
       "group": "基础有色金属",
       "name": "锡",
-      "price": 404280,
+      "price": 406120,
       "unit": "元/吨",
-      "low52w": 310000,
-      "high52w": 455000,
-      "suggestion": "择机买入",
-      "suggestionType": "up",
+      "low52w": 250370,
+      "high52w": 438600,
+      "suggestion": "高位观望",
+      "suggestionType": "down",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.01,
-      "chartTrend": 0.08
+      "chartTrend": 0.0496
     },
     {
       "id": "nickel",
@@ -120,10 +120,10 @@
       "high52w": 153933,
       "suggestion": "暂缓采购",
       "suggestionType": "down",
-      "sourceName": "有色宝长江",
-      "sourceUrl": "https://www.ccmn.cn",
+      "sourceName": "生意社",
+      "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": -0.045
+      "chartTrend": -0.0494
     },
     {
       "id": "cupb",
@@ -144,16 +144,16 @@
       "id": "pnd",
       "group": "稀土 & 包材",
       "name": "镨钕金属",
-      "price": 860000,
+      "price": 855000,
       "unit": "元/吨",
-      "low52w": 580000,
-      "high52w": 1250000,
-      "suggestion": "高位观望",
+      "low52w": 542500,
+      "high52w": 1110000,
+      "suggestion": "观望",
       "suggestionType": "flat",
-      "sourceName": "上海有色网",
-      "sourceUrl": "https://www.smm.cn",
+      "sourceName": "生意社",
+      "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.018,
-      "chartTrend": -0.05
+      "chartTrend": -0.1047
     },
     {
       "id": "dyfe",
@@ -174,16 +174,16 @@
       "id": "pndOx",
       "group": "稀土 & 包材",
       "name": "镨钕氧化物",
-      "price": 705000,
+      "price": 695000,
       "unit": "元/吨",
-      "low52w": 480000,
-      "high52w": 1050000,
-      "suggestion": "择机买入",
-      "suggestionType": "up",
+      "low52w": 432500,
+      "high52w": 895000,
+      "suggestion": "观望",
+      "suggestionType": "flat",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.016,
-      "chartTrend": -0.08
+      "chartTrend": -0.109
     },
     {
       "id": "terbium",
@@ -204,7 +204,7 @@
       "id": "paper",
       "group": "稀土 & 包材",
       "name": "瓦楞原纸",
-      "price": 2804,
+      "price": 2812,
       "unit": "元/吨",
       "low52w": 2560,
       "high52w": 3240,
@@ -213,22 +213,22 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.006,
-      "chartTrend": 0.03
+      "chartTrend": 0.0331
     },
     {
       "id": "li",
       "group": "电池材料",
       "name": "电池级碳酸锂",
-      "price": 191000,
+      "price": 179000,
       "unit": "元/吨",
       "low52w": 59900,
       "high52w": 199000,
-      "suggestion": "高位谨慎",
-      "suggestionType": "up",
+      "suggestion": "暂缓采购",
+      "suggestionType": "down",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": 0.08
+      "chartTrend": 0.0113
     },
     {
       "id": "fepo",
