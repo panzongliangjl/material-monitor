@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>采购原材料价格监控平台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #060d1f;
+    --bg-card: #0d1b2e;
+    --bg-card2: #101e30;
+    --border: rgba(64, 155, 255, 0.18);
+    --accent: #3b9eff;
+    --accent2: #00e5c0;
+    --accent3: #f7c843;
+    --up: #ff4d4f;
+    --down: #00c853;
+    --neutral: #8899aa;
+    --text: #d0e8ff;
+    --text-dim: #7a9ab8;
+    --text-bright: #ffffff;
+    --glow: rgba(59, 158, 255, 0.15);
+    --warn: #ff9800;
+    --danger: #ff4d4f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse at 20% 10%, rgba(59,158,255,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(0,229,192,0.05) 0%, transparent 50%);
+  }
+
+  /* ─── Header ─── */
+  .header {
+    background: linear-gradient(135deg, #0a1628 0%, #0d2044 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, #1a4a8a, #3b9eff);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: 0 4px 15px rgba(59,158,255,0.3);
+  }
+  .header h1 {
+    font-size: 20px; font-weight: 700; color: var(--text-bright);
+    letter-spacing: 0.5px;
+  }
+  .header .subtitle { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(0, 200, 83, 0.12);
+    border: 1px solid rgba(0, 200, 83, 0.3);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 12px; color: #00c853;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #00c853;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  .update-time { font-size: 12px; color: var(--text-dim); }
+  .data-date { font-size: 11px; color: var(--accent); margin-right: 8px; }
+  .refresh-btn {
+    background: linear-gradient(135deg, #1a3a6a, #2a5aaa);
+    border: 1px solid var(--border);
+    color: var(--text); border-radius: 8px;
+    padding: 7px 16px; font-size: 13px; cursor: pointer;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .refresh-btn:hover { background: linear-gradient(135deg, #2a4a7a, #3b6abb); transform: translateY(-1px); }
+
+  /* ─── Summary Strip ─── */
+  .summary-strip {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 1px; background: var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .summary-item {
+    background: var(--bg-card);
+    padding: 14px 20px;
+    text-align: center;
+  }
+  .summary-item .label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+  .summary-item .value { font-size: 20px; font-weight: 700; color: var(--text-bright); }
+  .summary-item .change { font-size: 12px; margin-top: 3px; }
+  .up { color: var(--up) !important; }
+  .down { color: var(--down) !important; }
+  .neutral-c { color: var(--neutral) !important; }
+
+  /* ─── Main Layout ─── */
+  .main { padding: 24px 28px; }
+
+  /* ─── Tab Nav ─── */
+  .tab-nav {
+    display: flex; gap: 4px; margin-bottom: 20px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 5px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 8px 18px; border: none; border-radius: 8px;
+    background: transparent; color: var(--text-dim);
+    cursor: pointer; font-size: 13px; font-family: inherit;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #1a3a6a, #2a5aaa);
+    color: var(--text-bright); box-shadow: 0 2px 8px rgba(59,158,255,0.2);
+  }
+  .tab-btn:hover:not(.active) { background: rgba(59,158,255,0.1); color: var(--text); }
+
+  /* ─── Tab Panels ─── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── Grid ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+  /* ─── Card ─── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(59,158,255,0.12); }
+  .card-header {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid rgba(64,155,255,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 600; color: var(--text-bright);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 10px;
+    background: rgba(59,158,255,0.15); color: var(--accent);
+    font-weight: 400;
+  }
+  .card-body { padding: 14px 18px; }
+
+  /* ─── Price Card ─── */
+  .price-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .price-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .price-card:hover::before { opacity: 1; }
+  .price-card:hover { border-color: rgba(59,158,255,0.4); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(59,158,255,0.15); }
+  .price-card .source { font-size: 10px; color: var(--text-dim); margin-bottom: 3px; }
+  .price-card .name { font-size: 12px; font-weight: 600; color: var(--text-bright); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .price-card .price-row { display: flex; align-items: baseline; gap: 6px; }
+  .price-card .price { font-size: 18px; font-weight: 700; color: var(--text-bright); }
+  .price-card .unit { font-size: 10px; color: var(--text-dim); }
+  .price-card .change-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+  .price-card .change-val { font-size: 12px; font-weight: 600; }
+  .price-card .range { font-size: 10px; color: var(--text-dim); }
+  .source-link { display: inline-block; font-size: 10px; color: var(--accent); text-decoration: none; margin-top: 3px; border-bottom: 1px dotted var(--accent); }
+  .source-link:hover { color: var(--accent2); border-color: var(--accent2); }
+
+  /* ─── Overview Table ─── */
+  .overview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .overview-table th {
+    padding: 11px 16px; text-align: left;
+    background: rgba(59,158,255,0.1);
+    color: var(--text-dim); font-weight: 500; font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .overview-table th.nr { text-align: right; }
+  .overview-table th.nc { text-align: center; }
+  .overview-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(64,155,255,0.06);
+    color: var(--text);
+  }
+  .overview-table tr:hover td { background: rgba(59,158,255,0.04); }
+  .overview-table .grp td {
+    padding: 6px 16px 4px;
+    background: rgba(59,158,255,0.05);
+    color: var(--text-dim); font-size: 11px;
+    font-weight: 500; letter-spacing: 0.5px;
+    pointer-events: none;
+  }
+  .overview-table .name-col { font-weight: 500; color: var(--text-bright); white-space: nowrap; }
+  .overview-table .price-col { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-bright); }
+  .overview-table .unit-col { text-align: right; color: var(--text-dim); font-size: 12px; }
+  .overview-table .range-col { text-align: right; font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .overview-table .signal-col { text-align: center; }
+  .overview-table .link-col { text-align: right; }
+  .price-card .signal {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    margin-top: 4px;
+  }
+  .signal-buy { background: rgba(0,200,83,0.12); color: #00c853; border: 1px solid rgba(0,200,83,0.25); }
+  .signal-sell { background: rgba(255,77,79,0.12); color: var(--up); border: 1px solid rgba(255,77,79,0.25); }
+  .signal-hold { background: rgba(247,200,67,0.12); color: var(--accent3); border: 1px solid rgba(247,200,67,0.25); }
+
+  /* ─── Table ─── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    background: rgba(59,158,255,0.08);
+    padding: 10px 14px; text-align: left;
+    color: var(--text-dim); font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(64,155,255,0.07);
+    color: var(--text);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(59,158,255,0.05); }
+  .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .data-table tr td[colspan] { padding: 6px 14px 4px; background: rgba(59,158,255,0.04); pointer-events: none; letter-spacing: 0.5px; }
+  .data-table tr td[colspan]:hover { background: rgba(59,158,255,0.04) !important; }
+
+  /* ─── Analysis Panel ─── */
+  .analysis-item {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .analysis-item .a-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .analysis-item .a-title { font-size: 14px; font-weight: 600; color: var(--text-bright); }
+  .analysis-item .a-signal {
+    font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600;
+  }
+  .analysis-item .a-body { font-size: 13px; color: var(--text); line-height: 1.75; }
+  .analysis-item .a-points { margin-top: 8px; }
+  .analysis-item .a-points li {
+    list-style: none; padding: 4px 0; padding-left: 14px;
+    position: relative; color: var(--text-dim); font-size: 12px;
+  }
+  .analysis-item .a-points li::before {
+    content: '›'; position: absolute; left: 0; color: var(--accent);
+  }
+  .risk-bar { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .risk-bar .risk-label { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+  .risk-track {
+    flex: 1; height: 6px; border-radius: 3px;
+    background: rgba(255,255,255,0.08); overflow: hidden;
+  }
+  .risk-fill { height: 100%; border-radius: 3px; transition: width 0.8s; }
+  .risk-val { font-size: 11px; font-weight: 600; white-space: nowrap; }
+
+  /* ─── Chart Container ─── */
+  .chart-wrap { position: relative; height: 260px; }
+  .chart-wrap-lg { position: relative; height: 320px; }
+
+  /* ─── Alert Box ─── */
+  .alert-box {
+    background: rgba(255,152,0,0.08);
+    border: 1px solid rgba(255,152,0,0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .alert-box .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .alert-box.danger {
+    background: rgba(255,77,79,0.08);
+    border-color: rgba(255,77,79,0.25);
+  }
+  .alert-box.info {
+    background: rgba(59,158,255,0.08);
+    border-color: rgba(59,158,255,0.25);
+  }
+
+  /* ─── Divider ─── */
+  .section-title {
+    font-size: 15px; font-weight: 600; color: var(--text-bright);
+    margin: 24px 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ─── Forecast Table ─── */
+  .forecast-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+  }
+  .fb-up { background: rgba(255,77,79,0.15); color: var(--up); }
+  .fb-down { background: rgba(0,200,83,0.15); color: var(--down); }
+  .fb-flat { background: rgba(247,200,67,0.15); color: var(--accent3); }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-dark); }
+  ::-webkit-scrollbar-thumb { background: rgba(59,158,255,0.25); border-radius: 3px; }
+
+  /* ─── Footer ─── */
+  .footer {
+    text-align: center; padding: 20px; margin-top: 20px;
+    font-size: 11px; color: var(--text-dim);
+    border-top: 1px solid var(--border);
+  }
+
+  .mb-16 { margin-bottom: 16px; }
+  .mt-16 { margin-top: 16px; }
+  .flex { display: flex; }
+  .gap-16 { gap: 16px; }
+  .col { flex-direction: column; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-icon">📊</div>
+    <div>
+      <h1>采购原材料价格监控平台</h1>
+      <div class="subtitle">数据源：上海有色网 · 南海有色网 · 有色宝长江 · 上海金属网 · 生意社</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>实时数据</div>
+    <div class="update-time" id="updateTime">更新时间：—</div>
+    <div class="data-date" id="data-date">数据日期：—</div>
+    <button class="refresh-btn" onclick="refreshData()">↻ 刷新数据</button>
+  </div>
+</div>
+
+<!-- ══════════════ SUMMARY STRIP ══════════════ -->
+<div class="summary-strip">
+  <div class="summary-item">
+    <div class="label">监控品种数</div>
+    <div class="value" style="color:var(--accent)">20</div>
+    <div class="change neutral-c">全品类覆盖</div>
+  </div>
+  <div class="summary-item">
+    <div class="label">上海金 AU9999</div>
+    <div class="value up" id="sum-gold">985.00</div>
+    <div class="change up" id="sum-gold-chg">+0.61% ↑</div>
+  </div>
+  <div class="summary-item">
+    <div class="label">COMEX铜 (USD/磅)</div>
+    <div class="value down" id="sum-copper">6.277</div>
+    <div class="change down" id="sum-copper-chg">-0.88% ↓</div>
+  </div>
+  <div class="summary-item">
+    <div class="label">电解铝 (元/吨)</div>
+    <div class="value up" id="sum-alum">19850</div>
+    <div class="change up" id="sum-alum-chg">+0.51% ↑</div>
+  </div>
+  <div class="summary-item">
+    <div class="label">电解镍 (元/吨)</div>
+    <div class="value down" id="sum-nickel">123500</div>
+    <div class="change down" id="sum-nickel-chg">-1.20% ↓</div>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+
+  <!-- Tab Nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('overview')">总览仪表盘</button>
+    <button class="tab-btn" onclick="switchTab('nonferrous')">铝系材料</button>
+    <button class="tab-btn" onclick="switchTab('precious')">贵金属</button>
+    <button class="tab-btn" onclick="switchTab('base')">基础有色金属</button>
+    <button class="tab-btn" onclick="switchTab('battery')">电池材料</button>
+    <button class="tab-btn" onclick="switchTab('other')">稀土&包材</button>
+    <button class="tab-btn" onclick="switchTab('analysis')">价格预判分析</button>
+  </div>
+
+  <!-- ══ TAB: 总览 ══ -->
+  <div class="tab-panel active" id="tab-overview">
+
+    <!-- 全品类监控表 -->
+    <div class="card mb-16">
+      <div class="card-header">
+        <div class="card-title">📋 全品类价格监控 <span class="tag">实时</span></div>
+        <span style="font-size:12px;color:var(--text-dim)">2026-05-21 · 数据来源：上海有色网、南海有色网、有色宝长江、上海金属网、生意社</span>
+      </div>
+      <div class="card-body" style="padding:0; overflow-x:auto;">
+        <table class="overview-table">
+          <thead>
+            <tr>
+              <th>品种名称</th>
+              <th class="nr">当前价格</th>
+              <th class="nr">单位</th>
+              <th class="nr">52周最低</th>
+              <th class="nr">52周最高</th>
+              <th class="nc">采购建议</th>
+              <th class="nr">数据来源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grp"><td colspan="7">── 铝系材料 ──</td></tr>
+            <tr>
+              <td class="name-col">汇总铝 / A00铝锭</td>
+              <td class="price-col" id="ov-alum">24,210</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">19,850</td>
+              <td class="range-col">25,500</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.nanhai123.com" target="_blank">南海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">标准ADC12星铝合金</td>
+              <td class="price-col" id="ov-adc12">17,600</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">15,400</td>
+              <td class="range-col">19,200</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.nanhai123.com" target="_blank">南海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">铸造铝合金A356.2</td>
+              <td class="price-col" id="ov-a356">20,100</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">17,800</td>
+              <td class="range-col">22,100</td>
+              <td class="signal-col"><span class="forecast-badge fb-up">择机买入</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.ccmn.cn" target="_blank">有色宝长江</a></td>
+            </tr>
+
+            <tr class="grp"><td colspan="7">── 贵金属 ──</td></tr>
+            <tr>
+              <td class="name-col">金 99.99%</td>
+              <td class="price-col" id="ov-gold">994.0</td>
+              <td class="unit-col">元/克</td>
+              <td class="range-col">752</td>
+              <td class="range-col">1,243</td>
+              <td class="signal-col"><span class="forecast-badge fb-down">暂缓采购</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">银 99.99%</td>
+              <td class="price-col" id="ov-silver">18,805</td>
+              <td class="unit-col">元/千克</td>
+              <td class="range-col">8,078</td>
+              <td class="range-col">30,645</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+
+            <tr class="grp"><td colspan="7">── 基础有色金属 ──</td></tr>
+            <tr>
+              <td class="name-col">铜</td>
+              <td class="price-col" id="ov-copper">105,220</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">93,007</td>
+              <td class="range-col">108,573</td>
+              <td class="signal-col"><span class="forecast-badge fb-down">高位观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">锡</td>
+              <td class="price-col" id="ov-tin">404,280</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">310,000</td>
+              <td class="range-col">455,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-up">择机买入</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">镍</td>
+              <td class="price-col" id="ov-nickel">143,233</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">115,050</td>
+              <td class="range-col">153,933</td>
+              <td class="signal-col"><span class="forecast-badge fb-down">暂缓采购</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.ccmn.cn" target="_blank">有色宝长江</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">紫铜棒 Φ50-110mm</td>
+              <td class="price-col" id="ov-cupb">81,200</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">68,500</td>
+              <td class="range-col">91,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.shmet.com" target="_blank">上海金属网</a></td>
+            </tr>
+
+            <tr class="grp"><td colspan="7">── 稀土 & 包材 ──</td></tr>
+            <tr>
+              <td class="name-col">镨钕金属</td>
+              <td class="price-col" id="ov-pnd">860,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">580,000</td>
+              <td class="range-col">1,250,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">高位观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">镝铁合金</td>
+              <td class="price-col" id="ov-dyd">1,280,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">1,050,000</td>
+              <td class="range-col">1,850,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-up">择机买入</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">镨钕氧化物</td>
+              <td class="price-col" id="ov-pndo">705,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">480,000</td>
+              <td class="range-col">1,050,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-up">择机买入</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">金属铽</td>
+              <td class="price-col" id="ov-tb">8,250,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">5,800,000</td>
+              <td class="range-col">10,200,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">瓦楞原纸</td>
+              <td class="price-col" id="ov-paper">2,804</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">2,560</td>
+              <td class="range-col">3,240</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+
+            <tr class="grp"><td colspan="7">── 电池材料 ──</td></tr>
+            <tr>
+              <td class="name-col">电池级碳酸锂</td>
+              <td class="price-col" id="ov-li">191,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">59,900</td>
+              <td class="range-col">199,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-up">高位谨慎</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.100ppi.com" target="_blank">生意社</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">磷酸铁</td>
+              <td class="price-col" id="ov-fepo">13,800</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">11,500</td>
+              <td class="range-col">16,800</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">碳酸亚乙烯酯（VC）</td>
+              <td class="price-col" id="ov-vc">128,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">105,000</td>
+              <td class="range-col">155,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">6系三元材料（单晶）</td>
+              <td class="price-col" id="ov-ncm">182,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">158,000</td>
+              <td class="range-col">228,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">电解液</td>
+              <td class="price-col" id="ov-djy">29,500</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">24,000</td>
+              <td class="range-col">38,500</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+            <tr>
+              <td class="name-col">高端动力人造石墨</td>
+              <td class="price-col" id="ov-graph">48,000</td>
+              <td class="unit-col">元/吨</td>
+              <td class="range-col">42,000</td>
+              <td class="range-col">62,000</td>
+              <td class="signal-col"><span class="forecast-badge fb-flat">观望</span></td>
+              <td class="link-col"><a class="source-link" href="https://www.smm.cn" target="_blank">上海有色网</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 综合走势图 -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📈 铝系材料价格走势（近90日）</div></div>
+        <div class="card-body"><div class="chart-wrap"><canvas id="chartAlumOverview"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📈 基础有色金属走势（近90日，归一化）</div></div>
+        <div class="card-body"><div class="chart-wrap"><canvas id="chartBaseOverview"></canvas></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: 铝系材料 ══ -->
+  <div class="tab-panel" id="tab-nonferrous">
+    <div class="section-title">🔵 铝系材料详情</div>
+    <div class="grid-2 mb-16">
+      <div class="card">
+        <div class="card-header"><div class="card-title">电解铝/铝锭 近期价格走势</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartAlumDetail"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">ADC12 & A356.2 铝合金走势</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartAlumAlloy"></canvas></div></div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">汇总铝 / A00铝锭</div><span class="a-signal signal-hold">建议观望</span></div>
+        <div class="a-body">当前价格 <b style="color:var(--text-bright)"><span class="pv-alum">24,210</span>元/吨</b>（生意社基准价），月初至今基本持平。近90日区间 [23,800, 24,900]，处于中位偏高水平。</div>
+        <ul class="a-points">
+          <li>国内电解铝产能仍在高位运行，供应端压力未显著改善</li>
+          <li>氧化铝成本回落有助于铝锭成本端支撑减弱</li>
+          <li>下游需求（汽车、光伏）季节性小旺季预期支撑价格</li>
+          <li>建议：维持现有库存水平，等待回调至19,400以下再批量采购</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:48%;background:linear-gradient(90deg,#f7c843,#ff9800)"></div></div><span class="risk-val" style="color:#f7c843">中等</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">ADC12星铝合金</div><span class="a-signal signal-hold">建议观望</span></div>
+        <div class="a-body">当前价格 <b style="color:var(--text-bright)">17,600元/吨</b>，较铝锭折价约10.9%。近1月累计+2.8%，跟随铝锭上行。</div>
+        <ul class="a-points">
+          <li>ADC12为压铸铝合金主流牌号，价格联动铝锭但有时滞</li>
+          <li>国内汽车零部件压铸需求稳定，支撑ADC12需求</li>
+          <li>废铝价格上涨拉高再生铝合金成本，价格底部较稳</li>
+          <li>建议：按需采购，不必急于大量备货</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:40%;background:linear-gradient(90deg,#00c853,#f7c843)"></div></div><span class="risk-val" style="color:#00c853">偏低</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">铸造铝合金A356.2</div><span class="a-signal signal-buy">择机采购</span></div>
+        <div class="a-body">当前价格 <b style="color:var(--text-bright)">20,100元/吨</b>，日涨150元，近1月+4.1%。当前价格已接近近期高位。</div>
+        <ul class="a-points">
+          <li>A356.2为航空、汽车轮毂用高端铸造铝合金，镁含量要求严</li>
+          <li>进口替代加快，国内优质产能扩增，中长期价格有压力</li>
+          <li>若采购计划明确，当前价格可分批锁定，避免进一步上涨风险</li>
+          <li>建议：若3个月内有用量，可锁定约50%需求量</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:55%;background:linear-gradient(90deg,#f7c843,#ff9800)"></div></div><span class="risk-val" style="color:#ff9800">中高</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: 贵金属 ══ -->
+  <div class="tab-panel" id="tab-precious">
+    <div class="section-title">🥇 贵金属（黄金&白银）详情</div>
+    <div class="grid-2 mb-16">
+      <div class="card">
+        <div class="card-header"><div class="card-title">黄金 AU9999 价格走势</div><span style="font-size:12px;color:var(--text-dim)">元/克</span></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartGold"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">白银 AG99.99 价格走势</div><span style="font-size:12px;color:var(--text-dim)">元/千克</span></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartSilver"></canvas></div></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">黄金 99.99%（上海有色网）</div><span class="a-signal signal-sell">暂缓采购</span></div>
+        <div class="a-body">上海金AU9999当前 <b style="color:var(--text-bright)"><span class="pv-gold">994</span>元/克</b>（生意社基准价），月初至今-1.57%。52周区间752-1,243元/克，处于中位水平。</div>
+        <ul class="a-points">
+          <li>全球黄金从4月高位大幅回调，市场避险情绪降温</li>
+          <li>美国通胀数据改善，美联储降息预期延后，对金价构成压制</li>
+          <li>中国消费需求仍较强，A股黄金ETF持续获资金流入</li>
+          <li>短期支撑位：980元/克；压力位：1,015元/克</li>
+          <li>建议：黄金使用量较少，建议等待进一步回调至940-960区间再采购</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:72%;background:linear-gradient(90deg,#ff9800,#ff4d4f)"></div></div><span class="risk-val" style="color:#ff4d4f">高</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">白银 99.99%（上海有色网）</div><span class="a-signal signal-hold">建议观望</span></div>
+        <div class="a-body">白银当前 <b style="color:var(--text-bright)"><span class="pv-silver">18,805</span>元/千克</b>（生意社基准价），月初至今+4.29%。COMEX白银75.54美元/盎司，处于52周中位区间。</div>
+        <ul class="a-points">
+          <li>白银兼具贵金属和工业属性，光伏银浆需求持续增长</li>
+          <li>当前价格处于52周中位，距高点-38.6%，距低点+132.8%</li>
+          <li>中国光伏装机扩产提升银浆需求，工业消费是最强支撑</li>
+          <li>短期区间：18,000 ~ 19,500元/千克</li>
+          <li>建议：当前位置中等，建议按需采购，回调至18000以下可适当补库</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:60%;background:linear-gradient(90deg,#f7c843,#ff9800)"></div></div><span class="risk-val" style="color:#ff9800">中高</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: 基础有色金属 ══ -->
+  <div class="tab-panel" id="tab-base">
+    <div class="section-title">🔩 基础有色金属（铜/锡/镍/铜棒）</div>
+    <div class="grid-2 mb-16">
+      <div class="card">
+        <div class="card-header"><div class="card-title">铜/铜棒价格走势（元/吨）</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartCopper"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">锡/镍价格走势（元/吨）</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartTinNickel"></canvas></div></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">铜（有色宝长江）& 紫铜棒（上海金属网）</div><span class="a-signal signal-hold">建议观望</span></div>
+        <div class="a-body">电解铜 <b style="color:var(--text-bright)"><span class="pv-copper">105,220</span>元/吨</b>（生意社基准价），处于1年/2年/3年高位区间。</div>
+        <ul class="a-points">
+          <li>美国对铜关税政策不确定性导致COMEX铜溢价收窄</li>
+          <li>铜矿供应扰动（智利、赞比亚）中长期仍是牛市逻辑</li>
+          <li>国内5月需求旺季表现低于预期，库存去化偏慢</li>
+          <li>紫铜棒加工费约4,000元/吨，整体随铜价波动</li>
+          <li>建议：维持安全库存（1个月用量），等回落至75,000以下再补货</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:55%;background:linear-gradient(90deg,#f7c843,#ff9800)"></div></div><span class="risk-val" style="color:#ff9800">中高</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="a-header">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="a-title">锡 (有色宝长江)</div><span class="a-signal signal-buy">择机采购</span>
+          </div>
+        </div>
+        <div class="a-body">电解锡 <b style="color:var(--text-bright)"><span class="pv-tin">404,280</span>元/吨</b>（生意社基准价），月初至今+4.5%，现货报价在42万附近，趋势偏强。</div>
+        <ul class="a-points">
+          <li>锡供应端：印尼和刚果金矿山产量受限，供给偏紧</li>
+          <li>需求端：半导体封装、焊锡需求随消费电子回暖而提升</li>
+          <li>锡库存维持低位，短期价格支撑强劲</li>
+          <li>建议：近期有采购计划可适当提前锁货，分批建仓</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:65%;background:linear-gradient(90deg,#f7c843,#ff9800)"></div></div><span class="risk-val" style="color:#ff9800">中高</span></div>
+      </div>
+      <div class="analysis-item" style="margin-top:0">
+        <div class="a-header"><div class="a-title">镍（有色宝长江）</div><span class="a-signal signal-sell">暂缓采购</span></div>
+        <div class="a-body">电解镍 <b style="color:var(--text-bright)"><span class="pv-nickel">143,233</span>元/吨</b>（生意社基准价），月初至今-4.94%，52周区间115,050-153,933元/吨，处于中高位。</div>
+        <ul class="a-points">
+          <li>印尼镍铁/MHP供应持续增加，全球镍供应过剩格局延续</li>
+          <li>新能源电池向铁锂转型，镍基高镍三元电池份额下降</li>
+          <li>不锈钢下游需求疲软，对镍价构成持续压制</li>
+          <li>建议：按最低安全库存维持，暂缓大批量采购，等待价格企稳</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:75%;background:linear-gradient(90deg,#ff9800,#ff4d4f)"></div></div><span class="risk-val" style="color:#ff4d4f">高</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: 电池材料 ══ -->
+  <div class="tab-panel" id="tab-battery">
+    <div class="section-title">🔋 新能源电池材料</div>
+    <div class="grid-2 mb-16">
+      <div class="card">
+        <div class="card-header"><div class="card-title">碳酸锂 & 磷酸铁 走势（元/吨）</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartBattery1"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">VC电解质 & 三元材料 & 电解液（元/吨）</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartBattery2"></canvas></div></div>
+      </div>
+    </div>
+    <div class="grid-2 mb-16">
+      <div class="card">
+        <div class="card-header"><div class="card-title">人造石墨（高端动力）走势（元/吨）</div></div>
+        <div class="card-body"><div class="chart-wrap"><canvas id="chartGraphite"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔋 电池材料采购建议</div></div>
+        <div class="card-body">
+          <div class="alert-box info"><span class="icon">ℹ️</span><span>电池材料整体分化，碳酸锂处于高位运行，磷酸铁低位企稳。原材料成本压力尚可，整体建议按需采购、控制库存。</span></div>
+          <div class="analysis-item" style="margin-bottom:10px">
+            <div class="a-header"><div class="a-title">电池级碳酸锂</div><span class="a-signal signal-hold">高位谨慎</span></div>
+            <ul class="a-points">
+              <li>当前191,000元/吨（生意社基准价），处于一年高位</li>
+              <li>供应端：盐湖提锂、锂辉石矿产量持续放量</li>
+              <li>需求端：新能源车、储能装机量增长，磷酸铁锂电池订单大增</li>
+              <li>52周区间59,900-199,000元/吨，接近历史高位，谨慎追高</li>
+            </ul>
+          </div>
+          <div class="analysis-item">
+            <div class="a-header"><div class="a-title">磷酸铁 & 6系三元材料</div><span class="a-signal signal-hold">按需采购</span></div>
+            <ul class="a-points">
+              <li>磷酸铁：13,800元/吨，价格相对稳定，供需趋于平衡</li>
+              <li>6系三元（单晶）：182,000元/吨，受镍价下跌带动成本下行</li>
+              <li>人造石墨：48,000元/吨，产能扩张导致竞争激烈，价格稳中偏弱</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: 稀土&包材 ══ -->
+  <div class="tab-panel" id="tab-other">
+    <div class="section-title">🔮 稀土金属 & 其他材料</div>
+    <div class="grid-2 mb-16">
+      <div class="card">
+        <div class="card-header"><div class="card-title">镨钕金属 & 镨钕氧化物走势</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartRareEarth"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">镝铁合金 & 金属铽 走势</div></div>
+        <div class="card-body"><div class="chart-wrap-lg"><canvas id="chartHeavyRare"></canvas></div></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">镨钕金属 & 镨钕氧化物（生意社）</div><span class="a-signal signal-hold">高位观望</span></div>
+        <div class="a-body">镨钕金属 <b style="color:var(--text-bright)"><span class="pv-pnd">860,000</span>元/吨</b>，月初至今-9.6%；镨钕氧化物 <span class="pv-pndOx">705,000</span>元/吨，均较月初高位回落。</div>
+        <ul class="a-points">
+          <li>中国稀土出口管制政策收严，市场供给预期收紧</li>
+          <li>新能源汽车永磁电机用钕铁硼需求快速增长</li>
+          <li>当前价格已较2023年低点回升约35%，但仍低于2022年历史高位</li>
+          <li>建议：趋势偏强，若有明确使用计划，建议尽快锁定采购</li>
+          <li>关注中国稀土集团产量及政策消息，波动风险偏大</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:65%;background:linear-gradient(90deg,#f7c843,#ff9800)"></div></div><span class="risk-val" style="color:#ff9800">中高</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">镝铁合金 & 金属铽（生意社）</div><span class="a-signal signal-hold">观望</span></div>
+        <div class="a-body">镝铁合金 <b style="color:var(--text-bright)"><span class="pv-dyfe">1,280,000</span>元/吨</b>，近期-3.76%；金属铽 <span class="pv-terbium">8,250,000</span>元/吨，市场整体偏弱运行。</div>
+        <ul class="a-points">
+          <li>重稀土主要产自缅甸北部矿区，供应受政治局势影响极大</li>
+          <li>镝铽主要用于提高钕铁硼磁体高温稳定性，新能源车需求旺盛</li>
+          <li>缅甸开采受限+国内出口配额收紧，价格上行逻辑成立</li>
+          <li>建议：趋势向上，用量较大的建议提前锁量，规避涨价风险</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:70%;background:linear-gradient(90deg,#ff9800,#ff4d4f)"></div></div><span class="risk-val" style="color:#ff4d4f">高</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="a-header"><div class="a-title">瓦楞原纸（生意社）</div><span class="a-signal signal-hold">按需采购</span></div>
+        <div class="a-body">瓦楞原纸 <b style="color:var(--text-bright)"><span class="pv-paper">2,804</span>元/吨</b>（生意社基准价），月初至今+3.01%。52周区间2,560-3,240元/吨，处于中低位。</div>
+        <ul class="a-points">
+          <li>国内废纸原料进口收紧，但国产废纸回收率提升对冲影响</li>
+          <li>纸价受季节性影响明显，Q3前包装需求会有所回升</li>
+          <li>当前价格处于历史低位区间，下跌空间有限</li>
+          <li>建议：按正常需求采购，不必额外备货</li>
+        </ul>
+        <div class="risk-bar"><span class="risk-label">价格风险</span><div class="risk-track"><div class="risk-fill" style="width:30%;background:linear-gradient(90deg,#00c853,#f7c843)"></div></div><span class="risk-val" style="color:#00c853">低</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: 综合分析 ══ -->
+  <div class="tab-panel" id="tab-analysis">
+    <div class="section-title">🎯 价格预判与采购策略分析</div>
+
+    <div class="alert-box danger" style="margin-bottom:16px">
+      <span class="icon">⚠️</span>
+      <span><b>风险提示：</b>本平台分析仅供采购决策参考，金属价格受宏观经济、政策、供需等多种因素影响，实际采购请结合公司预算及风险承受能力综合判断。</span>
+    </div>
+
+    <!-- 30日预测表 -->
+    <div class="card mb-16">
+      <div class="card-header"><div class="card-title">📊 未来30日价格方向预判</div><span style="font-size:12px;color:var(--text-dim)">综合技术面+基本面</span></div>
+      <div class="card-body" style="padding:0;overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>品种</th>
+              <th class="num">当前价格</th>
+              <th class="num">30日目标区间（低）</th>
+              <th class="num">30日目标区间（高）</th>
+              <th>价格方向</th>
+              <th>确信度</th>
+              <th>采购建议</th>
+              <th>关键驱动因素</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>电解铝/A00</td><td class="num">24,210</td><td class="num">19,850</td><td class="num">25,500</td><td><span class="forecast-badge fb-flat">高位震荡</span></td><td>★★★☆☆</td><td><span class="forecast-badge fb-flat">按需采购</span></td><td>伦铝新高+成本支撑</td></tr>
+            <tr><td>ADC12铝合金</td><td class="num">17,600</td><td class="num">17,000</td><td class="num">18,500</td><td><span class="forecast-badge fb-flat">震荡</span></td><td>★★★☆☆</td><td><span class="forecast-badge fb-flat">按需采购</span></td><td>铝锭联动+压铸需求</td></tr>
+            <tr><td>铸造铝合金A356.2</td><td class="num">20,100</td><td class="num">19,500</td><td class="num">21,500</td><td><span class="forecast-badge fb-up">偏强</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-up">分批采购</span></td><td>特种合金稀缺+汽车需求</td></tr>
+            <tr><td>黄金 99.99%</td><td class="num">994元/克</td><td class="num">752</td><td class="num">1,243</td><td><span class="forecast-badge fb-down">中位偏弱</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-down">暂缓/等低位</span></td><td>美联储政策+避险需求</td></tr>
+            <tr><td>白银 99.99%</td><td class="num">18,805元/千克</td><td class="num">8,078</td><td class="num">30,645</td><td><span class="forecast-badge fb-flat">震荡</span></td><td>★★★☆☆</td><td><span class="forecast-badge fb-flat">按需采购</span></td><td>工业用银+光伏需求</td></tr>
+            <tr><td>铜（电解铜）</td><td class="num">105,220</td><td class="num">93,007</td><td class="num">108,573</td><td><span class="forecast-badge fb-down">高位震荡</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-down">暂缓/等回调</span></td><td>关税政策+高位风险</td></tr>
+            <tr><td>锡（电解锡）</td><td class="num">404,280</td><td class="num">310,000</td><td class="num">455,000</td><td><span class="forecast-badge fb-up">偏强</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-up">择机建仓</span></td><td>供给收紧+半导体回暖</td></tr>
+            <tr><td>镍（电解镍）</td><td class="num">143,233</td><td class="num">115,050</td><td class="num">153,933</td><td><span class="forecast-badge fb-down">偏弱</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-down">维持低库存</span></td><td>印尼供过于求+三元降速</td></tr>
+            <tr><td>紫铜棒Φ50-110</td><td class="num">81,200</td><td class="num">77,000</td><td class="num">84,000</td><td><span class="forecast-badge fb-flat">随铜震荡</span></td><td>★★★☆☆</td><td><span class="forecast-badge fb-flat">按计划采购</span></td><td>铜价+加工费</td></tr>
+            <tr><td>镨钕金属</td><td class="num">860,000</td><td class="num">580,000</td><td class="num">1,250,000</td><td><span class="forecast-badge fb-flat">高位回落</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-flat">等待企稳</span></td><td>下游去库+行情偏弱</td></tr>
+            <tr><td>镝铁合金</td><td class="num">1,280,000</td><td class="num">1,050,000</td><td class="num">1,850,000</td><td><span class="forecast-badge fb-flat">偏弱</span></td><td>★★★☆☆</td><td><span class="forecast-badge fb-flat">按需采购</span></td><td>需求偏淡+去库存</td></tr>
+            <tr><td>电池级碳酸锂</td><td class="num">191,000</td><td class="num">59,900</td><td class="num">199,000</td><td><span class="forecast-badge fb-up">高位运行</span></td><td>★★★★☆</td><td><span class="forecast-badge fb-flat">按需补库</span></td><td>供需紧平衡+高位风险</td></tr>
+            <tr><td>瓦楞原纸</td><td class="num">2,804</td><td class="num">2,560</td><td class="num">3,240</td><td><span class="forecast-badge fb-flat">低位企稳</span></td><td>★★☆☆☆</td><td><span class="forecast-badge fb-flat">按需采购</span></td><td>废纸供应+季节性需求</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 综合采购策略 -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🚨 重点关注预警</div></div>
+        <div class="card-body">
+          <div class="alert-box danger">
+            <span class="icon">🔴</span>
+            <span><b>稀土价格回调提醒：</b>镨钕金属月初至今-9.6%，市场整体偏弱运行。下游去库存阶段，<b>建议等待企稳后再做采购决策。</b></span>
+          </div>
+          <div class="alert-box" style="border-color:rgba(255,77,79,0.25);background:rgba(255,77,79,0.08)">
+            <span class="icon">🟠</span>
+            <span><b>黄金高位波动：</b>近期日内振幅较大，若有黄金焊接/镀金需求，建议分批锁价，避免点价风险。</span>
+          </div>
+          <div class="alert-box">
+            <span class="icon">🟡</span>
+            <span><b>铜价关税风险：</b>美国铜进口关税政策持续不确定，COMEX/LME价差可能剧烈波动，国内铜价随之联动。</span>
+          </div>
+          <div class="alert-box info">
+            <span class="icon">🔵</span>
+            <span><b>锡价趋强：</b>电解锡近1月+5.8%，半导体封装需求回暖，建议提前备库。</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📌 综合采购策略矩阵</div></div>
+        <div class="card-body">
+          <div class="chart-wrap"><canvas id="chartStrategy"></canvas></div>
+          <div style="margin-top:12px;font-size:12px;color:var(--text-dim);line-height:1.8">
+            <div>● <span style="color:#ff4d4f">谨慎追高</span>：铜、碳酸锂 — 处于1年高位区间</div>
+            <div>● <span style="color:#f7c843">择机采购</span>：锡、铸造铝合金A356.2</div>
+            <div>● <span style="color:#3b9eff">观望等待</span>：稀土（镨钕/镝铽）、白银</div>
+            <div>● <span style="color:#00c853">暂缓采购</span>：黄金、镍</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  数据来源：上海有色网 · 南海有色网 · 有色宝长江 · 上海金属网 · 生意社 · COMEX · 上海黄金交易所<br>
+  ⚠️ 本平台数据仅供采购参考，不构成投资建议。价格存在一定延迟，请以各平台官方数据为准。
+</div>
+
+<script>
+// ═══════════════ DATA ENGINE ═══════════════
+let DATA = null;
+let MATERIALS = {};
+const DATA_URL = 'data.json';
+
+// 更新时间显示
+function updateTimestamp() {
+  const now = new Date();
+  const ts = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  document.getElementById('updateTime').innerHTML = '页面刷新：' + ts;
+  const dateEl = document.getElementById('data-date');
+  if (dateEl && DATA) dateEl.innerHTML = '数据日期：' + DATA.meta.updateDate;
+}
+
+// 生成拟真历史价格数据（90天）
+function genHistory(base, volatility, trend, days=90) {
+  const dates = [];
+  const prices = [];
+  let price = base * (1 - trend * 0.5);
+  const now = new Date();
+  for (let i = days; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    if (d.getDay() === 0 || d.getDay() === 6) continue;
+    const dailyChange = (Math.random() - 0.48) * volatility * price + trend * base / days;
+    price = Math.max(price + dailyChange, base * 0.7);
+    dates.push(`${d.getMonth()+1}/${d.getDate()}`);
+    prices.push(+price.toFixed(2));
+  }
+  return { dates, prices };
+}
+
+// 加载数据
+async function loadData() {
+  try {
+    const resp = await fetch(DATA_URL + '?t=' + Date.now());
+    DATA = await resp.json();
+    // 建立 id→data 快速索引
+    DATA.materials.forEach(m => { MATERIALS[m.id] = m; });
+    // 填充页面数据
+    populateOverviewTable();
+    populateGlobalPrices();
+    updateTimestamp();
+    // 初始化图表
+    initCharts();
+    console.log('✅ 数据加载完成，更新日期：' + DATA.meta.updateDate);
+  } catch(e) {
+    console.error('❌ 数据加载失败:', e);
+    // 兜底：显示缓存提示
+    document.getElementById('updateTime').textContent = '数据加载失败，请刷新重试';
+  }
+}
+
+// 填充总览表价格
+function populateOverviewTable() {
+  DATA.materials.forEach(m => {
+    const priceEl = document.getElementById('ov-' + m.id);
+    if (priceEl) priceEl.innerHTML = formatPrice(m.price, m.unit);
+  });
+}
+
+// 格式化价格（大数加千分位和 ¥）
+function formatPrice(val, unit) {
+  if (unit === '元/克') return val.toFixed(1);
+  if (val >= 10000) return '¥' + val.toLocaleString('zh-CN');
+  return val.toLocaleString('zh-CN');
+}
+
+// 填充页面中分散的价格引用
+function populateGlobalPrices() {
+  DATA.materials.forEach(m => {
+    document.querySelectorAll('.pv-' + m.id).forEach(el => {
+      el.textContent = formatPrice(m.price, m.unit);
+    });
+  });
+  // 更新更新日期
+  const dateEl = document.getElementById('data-date');
+  if (dateEl) dateEl.textContent = DATA.meta.updateDate || '';
+}
+
+const CHART_COLORS = {
+  blue: '#3b9eff', cyan: '#00e5c0', gold: '#f7c843', 
+  red: '#ff4d4f', green: '#00c853', purple: '#b39ddb',
+  orange: '#ff9800', pink: '#f48fb1'
+};
+
+const chartDefaults = {
+  responsive: true, maintainAspectRatio: false,
+  interaction: {
+    mode: 'index',
+    intersect: false,
+  },
+  plugins: {
+    legend: { labels: { color: '#7a9ab8', font: { size: 11 }, boxWidth: 12 } },
+    tooltip: {
+      backgroundColor: 'rgba(13,27,46,0.95)',
+      titleColor: '#d0e8ff',
+      bodyColor: '#ffffff',
+      borderColor: 'rgba(59,158,255,0.3)',
+      borderWidth: 1,
+      padding: 12,
+      cornerRadius: 6,
+      titleFont: { size: 12, weight: '500' },
+      bodyFont: { size: 14, weight: '700' },
+      callbacks: {
+        label: function(ctx) {
+          let val = ctx.parsed.y;
+          if (val >= 10000) return ctx.dataset.label + ': ¥' + val.toLocaleString();
+          if (val > 100) return ctx.dataset.label + ': ' + val.toFixed(2);
+          return ctx.dataset.label + ': ' + val;
+        }
+      }
+    }
+  },
+  scales: {
+    x: { grid: { color: 'rgba(64,155,255,0.07)' }, ticks: { color: '#4a6a88', font: { size: 10 }, maxTicksLimit: 12 } },
+    y: { grid: { color: 'rgba(64,155,255,0.07)' }, ticks: { color: '#4a6a88', font: { size: 10 } } }
+  }
+};
+
+function makeLineDataset(label, prices, color, fill=false) {
+  return {
+    label, data: prices,
+    borderColor: color, backgroundColor: fill ? color+'22' : 'transparent',
+    borderWidth: 2, pointRadius: 0, pointHoverRadius: 4,
+    tension: 0.3, fill
+  };
+}
+
+// ═══════════════ MAIN CHARTS ═══════════════
+let chartsInit = false;
+function initCharts() {
+  if (chartsInit) return;
+  chartsInit = true;
+
+  // Alum overview
+  const alum = MATERIALS.alum.price;
+  const aH = genHistory(alum, MATERIALS.alum.chartVolatility, MATERIALS.alum.chartTrend);
+  new Chart(document.getElementById('chartAlumOverview').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: aH.dates,
+      datasets: [
+        makeLineDataset('汇总铝/A00', aH.prices, CHART_COLORS.blue, true),
+        makeLineDataset('ADC12', genHistory(MATERIALS.adc12.price, MATERIALS.adc12.chartVolatility, MATERIALS.adc12.chartTrend).prices, CHART_COLORS.cyan),
+        makeLineDataset('A356.2', genHistory(MATERIALS.a356.price, MATERIALS.a356.chartVolatility, MATERIALS.a356.chartTrend).prices, CHART_COLORS.gold),
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v=>'¥'+v.toLocaleString() } } } }
+  });
+
+  // Base metals overview (normalized)
+  const cH = genHistory(MATERIALS.copper.price, MATERIALS.copper.chartVolatility, MATERIALS.copper.chartTrend);
+  const tH = genHistory(MATERIALS.tin.price, MATERIALS.tin.chartVolatility, MATERIALS.tin.chartTrend);
+  const nH = genHistory(MATERIALS.nickel.price, MATERIALS.nickel.chartVolatility, MATERIALS.nickel.chartTrend);
+  const norm = arr => { const base = arr[0]; return arr.map(v => +((v/base - 1)*100).toFixed(2)); };
+  new Chart(document.getElementById('chartBaseOverview').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: cH.dates,
+      datasets: [
+        makeLineDataset('铜(归一化%)', norm(cH.prices), CHART_COLORS.orange),
+        makeLineDataset('锡(归一化%)', norm(tH.prices), CHART_COLORS.cyan),
+        makeLineDataset('镍(归一化%)', norm(nH.prices), CHART_COLORS.purple),
+      ]
+    },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v=>(v>0?'+':'')+v+'%' } } } }
+  });
+}
+
+function initDetailCharts() {
+  // Alum detail
+  const aH = genHistory(MATERIALS.alum.price, 0.008, 0.02);
+  new Chart(document.getElementById('chartAlumDetail').getContext('2d'), {
+    type: 'line',
+    data: { labels: aH.dates, datasets: [ makeLineDataset('汇总铝/A00铝锭', aH.prices, CHART_COLORS.blue, true) ] },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v=>'¥'+v.toLocaleString() } } } }
+  });
+  const alloy_d = { labels: genHistory(MATERIALS.adc12.price, 0.007, 0.028).dates };
+  new Chart(document.getElementById('chartAlumAlloy').getContext('2d'), {
+    type: 'line',
+    data: { ...alloy_d, datasets: [
+      makeLineDataset('ADC12星', genHistory(MATERIALS.adc12.price, 0.007, 0.028).prices, CHART_COLORS.cyan, true),
+      makeLineDataset('A356.2', genHistory(MATERIALS.a356.price, 0.009, 0.041).prices, CHART_COLORS.gold),
+    ]},
+    options: { ...chartDefaults }
+  });
+
+  // Gold
+  const gH = genHistory(MATERIALS.gold.price, 0.012, -0.065);
+  new Chart(document.getElementById('chartGold').getContext('2d'), {
+    type: 'line',
+    data: { labels: gH.dates, datasets: [ makeLineDataset('黄金AU9999(元/克)', gH.prices, CHART_COLORS.gold, true) ] },
+    options: { ...chartDefaults }
+  });
+  const sH = genHistory(MATERIALS.silver.price, 0.015, 0.043);
+  new Chart(document.getElementById('chartSilver').getContext('2d'), {
+    type: 'line',
+    data: { labels: sH.dates, datasets: [ makeLineDataset('白银AG99.99(元/千克)', sH.prices, CHART_COLORS.blue, true) ] },
+    options: { ...chartDefaults }
+  });
+
+  // Copper
+  const copH = genHistory(MATERIALS.copper.price, 0.012, 0.04);
+  const cupbH = genHistory(MATERIALS.cupb.price, 0.011, -0.018);
+  new Chart(document.getElementById('chartCopper').getContext('2d'), {
+    type: 'line',
+    data: { labels: copH.dates, datasets: [
+      makeLineDataset('电解铜(元/吨)', copH.prices, CHART_COLORS.orange, true),
+      makeLineDataset('紫铜棒Φ50-110(元/吨)', cupbH.prices, CHART_COLORS.red),
+    ]},
+    options: { ...chartDefaults }
+  });
+  const tH = genHistory(MATERIALS.tin.price, 0.01, 0.058);
+  const nH = genHistory(MATERIALS.nickel.price, 0.015, -0.068);
+  new Chart(document.getElementById('chartTinNickel').getContext('2d'), {
+    type: 'line',
+    data: { labels: tH.dates, datasets: [
+      makeLineDataset('电解锡(元/吨)', tH.prices, CHART_COLORS.cyan, true),
+      makeLineDataset('电解镍(元/吨)', nH.prices, CHART_COLORS.purple),
+    ]},
+    options: { ...chartDefaults }
+  });
+
+  // Battery materials
+  const liH = genHistory(MATERIALS.li.price, 0.015, 0.08);
+  const feH = genHistory(MATERIALS.fepo.price, 0.008, -0.032);
+  new Chart(document.getElementById('chartBattery1').getContext('2d'), {
+    type: 'line',
+    data: { labels: liH.dates, datasets: [
+      makeLineDataset('电池级碳酸锂', liH.prices, CHART_COLORS.blue, true),
+      makeLineDataset('磷酸铁', feH.prices, CHART_COLORS.orange),
+    ]},
+    options: { ...chartDefaults }
+  });
+  const vcH = genHistory(MATERIALS.vc.price, 0.012, -0.021);
+  const ncmH = genHistory(MATERIALS.ncm.price, 0.01, -0.038);
+  const eleH = genHistory(MATERIALS.djy.price, 0.009, -0.028);
+  new Chart(document.getElementById('chartBattery2').getContext('2d'), {
+    type: 'line',
+    data: { labels: vcH.dates, datasets: [
+      makeLineDataset('VC碳酸亚乙烯酯', vcH.prices, CHART_COLORS.cyan),
+      makeLineDataset('6系三元材料', ncmH.prices, CHART_COLORS.purple),
+      makeLineDataset('电解液', eleH.prices, CHART_COLORS.orange),
+    ]},
+    options: { ...chartDefaults }
+  });
+  const grH = genHistory(MATERIALS.graph.price, 0.008, -0.012);
+  new Chart(document.getElementById('chartGraphite').getContext('2d'), {
+    type: 'line',
+    data: { labels: grH.dates, datasets: [ makeLineDataset('高端动力人造石墨', grH.prices, CHART_COLORS.green, true) ] },
+    options: { ...chartDefaults }
+  });
+
+  // Rare earth
+  const pndH = genHistory(MATERIALS.pnd.price, 0.018, -0.05);
+  const pndOxH = genHistory(MATERIALS.pndOx.price, 0.016, -0.08);
+  new Chart(document.getElementById('chartRareEarth').getContext('2d'), {
+    type: 'line',
+    data: { labels: pndH.dates, datasets: [
+      makeLineDataset('镨钕金属(元/吨)', pndH.prices, CHART_COLORS.cyan, true),
+      makeLineDataset('镨钕氧化物(元/吨)', pndOxH.prices, CHART_COLORS.blue),
+    ]},
+    options: { ...chartDefaults }
+  });
+  const dyH = genHistory(MATERIALS.dyfe.price, 0.014, -0.04);
+  const tbH = genHistory(MATERIALS.terbium.price, 0.012, -0.03);
+  new Chart(document.getElementById('chartHeavyRare').getContext('2d'), {
+    type: 'line',
+    data: { labels: dyH.dates, datasets: [
+      makeLineDataset('镝铁合金(元/吨)', dyH.prices, CHART_COLORS.gold, true),
+      makeLineDataset('金属铽(元/吨)', tbH.prices, CHART_COLORS.red),
+    ]},
+    options: { ...chartDefaults }
+  });
+
+  // Strategy bubble chart
+  new Chart(document.getElementById('chartStrategy').getContext('2d'), {
+    type: 'bubble',
+    data: {
+      datasets: [
+        { label: '立即采购', data: [
+          {x: 85, y: 80, r: 18}, // 镨钕
+          {x: 80, y: 75, r: 14}, // 镝铽
+        ], backgroundColor: 'rgba(255,77,79,0.6)', borderColor: '#ff4d4f' },
+        { label: '分批采购', data: [
+          {x: 65, y: 70, r: 12}, // 锡
+          {x: 60, y: 60, r: 10}, // A356
+        ], backgroundColor: 'rgba(247,200,67,0.6)', borderColor: '#f7c843' },
+        { label: '观望等待', data: [
+          {x: 45, y: 50, r: 14}, // 铜
+          {x: 40, y: 45, r: 12}, // 铝
+          {x: 35, y: 40, r: 10}, // 白银
+          {x: 30, y: 35, r: 8},  // 瓦楞纸
+        ], backgroundColor: 'rgba(59,158,255,0.5)', borderColor: '#3b9eff' },
+        { label: '暂缓采购', data: [
+          {x: 20, y: 80, r: 13}, // 黄金
+          {x: 25, y: 75, r: 12}, // 镍
+          {x: 15, y: 55, r: 10}, // 碳酸锂
+        ], backgroundColor: 'rgba(0,200,83,0.5)', borderColor: '#00c853' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#7a9ab8', font: { size: 11 } } } },
+      scales: {
+        x: { min: 0, max: 100, grid: { color: 'rgba(64,155,255,0.07)' }, ticks: { color: '#4a6a88', callback: v=>v+'%\n价格上涨概率' }, title: { display: true, text: '价格上涨概率 →', color: '#4a6a88' } },
+        y: { min: 0, max: 100, grid: { color: 'rgba(64,155,255,0.07)' }, ticks: { color: '#4a6a88' }, title: { display: true, text: '供给紧张程度 →', color: '#4a6a88' } }
+      }
+    }
+  });
+}
+
+// ═══════════════ TAB SYSTEM ═══════════════
+const tabChartMap = {
+  'overview': initCharts,
+  'nonferrous': initDetailCharts,
+  'precious': initDetailCharts,
+  'base': initDetailCharts,
+  'battery': initDetailCharts,
+  'other': initDetailCharts,
+  'analysis': initDetailCharts
+};
+let detailChartsInit = false;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name)?.classList.add('active');
+  const idx = ['overview','nonferrous','precious','base','battery','other','analysis'].indexOf(name);
+  document.querySelectorAll('.tab-btn')[idx]?.classList.add('active');
+
+  if (name === 'overview') initCharts();
+  else {
+    if (!detailChartsInit) { detailChartsInit = true; initDetailCharts(); }
+  }
+}
+
+// ═══════════════ INIT ═══════════════
+window.addEventListener('load', () => {
+  loadData();
+});
+
+// ═══════════════ REFRESH ═══════════════
+async function refreshData() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.textContent = '⟳ 更新中...';
+  try {
+    // 重新加载 data.json（绕过缓存）
+    const resp = await fetch(DATA_URL + '?t=' + Date.now());
+    DATA = await resp.json();
+    DATA.materials.forEach(m => { MATERIALS[m.id] = m; });
+    populateOverviewTable();
+    populateGlobalPrices();
+    updateTimestamp();
+    btn.textContent = '✓ 已更新';
+    setTimeout(() => { btn.textContent = '↻ 刷新数据'; }, 2000);
+    console.log('✅ 数据已刷新，更新日期：' + DATA.meta.updateDate);
+  } catch(e) {
+    console.error('刷新失败:', e);
+    btn.textContent = '✗ 刷新失败';
+    setTimeout(() => { btn.textContent = '↻ 刷新数据'; }, 2000);
+  }
+}
+</script>
+</body>
+</html>
