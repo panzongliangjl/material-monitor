@@ -18,7 +18,17 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.008,
-      "chartTrend": -0.0079
+      "chartTrend": -0.0079,
+      "analysis": {
+        "position": "中高位",
+        "positionPct": 79.3,
+        "trendLabel": "震荡",
+        "trendPct": -0.8,
+        "summary": "本月震荡（-0.8%），52周范围 20,137-25,273元/吨。",
+        "keyPoints": [
+          "建议优先消耗现有库存，等待价格回落再批量采购"
+        ]
+      }
     },
     {
       "id": "adc12",
@@ -33,7 +43,17 @@
       "sourceName": "南海有色网",
       "sourceUrl": "https://www.nanhai123.com",
       "chartVolatility": 0.007,
-      "chartTrend": 0.028
+      "chartTrend": 0.028,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 57.9,
+        "trendLabel": "小幅上涨",
+        "trendPct": 2.8,
+        "summary": "当前处于52周中位区间，本月小幅上涨（+2.8%），52周范围 15,400-19,200元/吨。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "a356",
@@ -43,12 +63,23 @@
       "unit": "元/吨",
       "low52w": 17800,
       "high52w": 22100,
-      "suggestion": "择机买入",
-      "suggestionType": "up",
+      "suggestion": "观望",
+      "suggestionType": "flat",
       "sourceName": "有色宝长江",
       "sourceUrl": "https://www.ccmn.cn",
       "chartVolatility": 0.009,
-      "chartTrend": 0.041
+      "chartTrend": 0.041,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 53.5,
+        "trendLabel": "明显上涨",
+        "trendPct": 4.1,
+        "summary": "当前处于52周中位区间，本月明显上涨（+4.1%），52周范围 17,800-22,100元/吨。",
+        "keyPoints": [
+          "近期涨势偏强（月+4.1%），建议关注供需面和政策变化",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "gold",
@@ -63,7 +94,17 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.012,
-      "chartTrend": -0.0157
+      "chartTrend": -0.0157,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 49.3,
+        "trendLabel": "小幅下跌",
+        "trendPct": -1.6,
+        "summary": "当前处于52周中位区间，本月小幅下跌（-1.6%），52周范围 752-1,243元/克。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "silver",
@@ -78,7 +119,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": 0.0429
+      "chartTrend": 0.0429,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 47.5,
+        "trendLabel": "明显上涨",
+        "trendPct": 4.3,
+        "summary": "当前处于52周中位区间，本月明显上涨（+4.3%），52周范围 8,078-30,645元/千克。",
+        "keyPoints": [
+          "近期涨势偏强（月+4.3%），建议关注供需面和政策变化",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "copper",
@@ -93,7 +145,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.012,
-      "chartTrend": 0.0187
+      "chartTrend": 0.0187,
+      "analysis": {
+        "position": "中高位",
+        "positionPct": 83.0,
+        "trendLabel": "小幅上涨",
+        "trendPct": 1.9,
+        "summary": "当前处于52周中高位区间，本月小幅上涨（+1.9%），52周范围 78,055-108,573元/吨。",
+        "keyPoints": [
+          "价格处于83%分位，接近年度高位，追高风险较大",
+          "建议优先消耗现有库存，等待价格回落再批量采购"
+        ]
+      }
     },
     {
       "id": "tin",
@@ -108,7 +171,19 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.01,
-      "chartTrend": 0.0496
+      "chartTrend": 0.0496,
+      "analysis": {
+        "position": "中高位",
+        "positionPct": 82.7,
+        "trendLabel": "明显上涨",
+        "trendPct": 5.0,
+        "summary": "当前处于52周中高位区间，本月明显上涨（+5.0%），52周范围 250,370-438,600元/吨。",
+        "keyPoints": [
+          "价格处于83%分位，接近年度高位，追高风险较大",
+          "近期涨势偏强（月+5.0%），建议关注供需面和政策变化",
+          "建议优先消耗现有库存，等待价格回落再批量采购"
+        ]
+      }
     },
     {
       "id": "nickel",
@@ -123,7 +198,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": -0.0494
+      "chartTrend": -0.0494,
+      "analysis": {
+        "position": "中高位",
+        "positionPct": 72.5,
+        "trendLabel": "明显下跌",
+        "trendPct": -4.9,
+        "summary": "当前处于52周中高位区间，本月明显下跌（-4.9%），52周范围 115,050-153,933元/吨。",
+        "keyPoints": [
+          "近期跌幅较大（月-4.9%），可能接近底部，关注反弹信号",
+          "建议优先消耗现有库存，等待价格回落再批量采购"
+        ]
+      }
     },
     {
       "id": "cupb",
@@ -138,7 +224,17 @@
       "sourceName": "上海金属网",
       "sourceUrl": "https://www.shmet.com",
       "chartVolatility": 0.011,
-      "chartTrend": -0.018
+      "chartTrend": -0.018,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 56.4,
+        "trendLabel": "小幅下跌",
+        "trendPct": -1.8,
+        "summary": "当前处于52周中位区间，本月小幅下跌（-1.8%），52周范围 68,500-91,000元/吨。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "pnd",
@@ -153,7 +249,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.018,
-      "chartTrend": -0.1047
+      "chartTrend": -0.1047,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 55.1,
+        "trendLabel": "明显下跌",
+        "trendPct": -10.5,
+        "summary": "当前处于52周中位区间，本月明显下跌（-10.5%），52周范围 542,500-1,110,000元/吨。",
+        "keyPoints": [
+          "近期跌幅较大（月-10.5%），可能接近底部，关注反弹信号",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "dyfe",
@@ -163,12 +270,23 @@
       "unit": "元/吨",
       "low52w": 1050000,
       "high52w": 1850000,
-      "suggestion": "择机买入",
+      "suggestion": "底部关注",
       "suggestionType": "up",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.014,
-      "chartTrend": -0.04
+      "chartTrend": -0.04,
+      "analysis": {
+        "position": "中低位",
+        "positionPct": 28.7,
+        "trendLabel": "明显下跌",
+        "trendPct": -4.0,
+        "summary": "当前处于52周中低位区间，本月明显下跌（-4.0%），52周范围 1,050,000-1,850,000元/吨。",
+        "keyPoints": [
+          "近期跌幅较大（月-4.0%），可能接近底部，关注反弹信号",
+          "如有明确使用计划，可适当提前锁定部分用量"
+        ]
+      }
     },
     {
       "id": "pndOx",
@@ -183,7 +301,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.016,
-      "chartTrend": -0.109
+      "chartTrend": -0.109,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 56.8,
+        "trendLabel": "明显下跌",
+        "trendPct": -10.9,
+        "summary": "当前处于52周中位区间，本月明显下跌（-10.9%），52周范围 432,500-895,000元/吨。",
+        "keyPoints": [
+          "近期跌幅较大（月-10.9%），可能接近底部，关注反弹信号",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "terbium",
@@ -198,7 +327,17 @@
       "sourceName": "上海有色网",
       "sourceUrl": "https://www.smm.cn",
       "chartVolatility": 0.012,
-      "chartTrend": -0.03
+      "chartTrend": -0.03,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 55.7,
+        "trendLabel": "明显下跌",
+        "trendPct": -3.0,
+        "summary": "当前处于52周中位区间，本月明显下跌（-3.0%），52周范围 5,800,000-10,200,000元/吨。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "paper",
@@ -213,7 +352,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.006,
-      "chartTrend": 0.0331
+      "chartTrend": 0.0331,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 37.1,
+        "trendLabel": "明显上涨",
+        "trendPct": 3.3,
+        "summary": "当前处于52周中位区间，本月明显上涨（+3.3%），52周范围 2,560-3,240元/吨。",
+        "keyPoints": [
+          "近期涨势偏强（月+3.3%），建议关注供需面和政策变化",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "li",
@@ -228,7 +378,18 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": 0.0113
+      "chartTrend": 0.0113,
+      "analysis": {
+        "position": "高位",
+        "positionPct": 85.6,
+        "trendLabel": "小幅上涨",
+        "trendPct": 1.1,
+        "summary": "当前处于52周高位区间，本月小幅上涨（+1.1%），52周范围 59,900-199,000元/吨。",
+        "keyPoints": [
+          "价格处于86%分位，接近年度高位，追高风险较大",
+          "建议优先消耗现有库存，等待价格回落再批量采购"
+        ]
+      }
     },
     {
       "id": "fepo",
@@ -243,7 +404,18 @@
       "sourceName": "上海有色网",
       "sourceUrl": "https://www.smm.cn",
       "chartVolatility": 0.008,
-      "chartTrend": -0.032
+      "chartTrend": -0.032,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 43.4,
+        "trendLabel": "明显下跌",
+        "trendPct": -3.2,
+        "summary": "当前处于52周中位区间，本月明显下跌（-3.2%），52周范围 11,500-16,800元/吨。",
+        "keyPoints": [
+          "近期跌幅较大（月-3.2%），可能接近底部，关注反弹信号",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "vc",
@@ -258,7 +430,17 @@
       "sourceName": "上海有色网",
       "sourceUrl": "https://www.smm.cn",
       "chartVolatility": 0.012,
-      "chartTrend": -0.021
+      "chartTrend": -0.021,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 46.0,
+        "trendLabel": "小幅下跌",
+        "trendPct": -2.1,
+        "summary": "当前处于52周中位区间，本月小幅下跌（-2.1%），52周范围 105,000-155,000元/吨。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "ncm",
@@ -273,7 +455,18 @@
       "sourceName": "上海有色网",
       "sourceUrl": "https://www.smm.cn",
       "chartVolatility": 0.01,
-      "chartTrend": -0.038
+      "chartTrend": -0.038,
+      "analysis": {
+        "position": "中低位",
+        "positionPct": 34.3,
+        "trendLabel": "明显下跌",
+        "trendPct": -3.8,
+        "summary": "当前处于52周中低位区间，本月明显下跌（-3.8%），52周范围 158,000-228,000元/吨。",
+        "keyPoints": [
+          "近期跌幅较大（月-3.8%），可能接近底部，关注反弹信号",
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "djy",
@@ -288,7 +481,17 @@
       "sourceName": "上海有色网",
       "sourceUrl": "https://www.smm.cn",
       "chartVolatility": 0.009,
-      "chartTrend": -0.028
+      "chartTrend": -0.028,
+      "analysis": {
+        "position": "中位",
+        "positionPct": 37.9,
+        "trendLabel": "小幅下跌",
+        "trendPct": -2.8,
+        "summary": "当前处于52周中位区间，本月小幅下跌（-2.8%），52周范围 24,000-38,500元/吨。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     },
     {
       "id": "graph",
@@ -303,7 +506,59 @@
       "sourceName": "上海有色网",
       "sourceUrl": "https://www.smm.cn",
       "chartVolatility": 0.008,
-      "chartTrend": -0.012
+      "chartTrend": -0.012,
+      "analysis": {
+        "position": "中低位",
+        "positionPct": 30.0,
+        "trendLabel": "小幅下跌",
+        "trendPct": -1.2,
+        "summary": "当前处于52周中低位区间，本月小幅下跌（-1.2%），52周范围 42,000-62,000元/吨。",
+        "keyPoints": [
+          "价格处于中位区间，建议按需采购、控制合理库存"
+        ]
+      }
     }
-  ]
+  ],
+  "groupAnalysis": {
+    "铝系材料": {
+      "summary": "该组物料整体平稳，建议按需采购。",
+      "alerts": [],
+      "buySignals": [],
+      "sellSignals": []
+    },
+    "贵金属": {
+      "summary": "该组物料整体平稳，建议按需采购。",
+      "alerts": [],
+      "buySignals": [],
+      "sellSignals": []
+    },
+    "基础有色金属": {
+      "summary": "暂缓/高位：锡、镍",
+      "alerts": [],
+      "buySignals": [],
+      "sellSignals": [
+        "锡",
+        "镍"
+      ]
+    },
+    "稀土 & 包材": {
+      "summary": "关注买入：镝铁合金",
+      "alerts": [
+        "⚠️ 镨钕金属 月跌10.5%",
+        "⚠️ 镨钕氧化物 月跌10.9%"
+      ],
+      "buySignals": [
+        "镝铁合金"
+      ],
+      "sellSignals": []
+    },
+    "电池材料": {
+      "summary": "暂缓/高位：电池级碳酸锂",
+      "alerts": [],
+      "buySignals": [],
+      "sellSignals": [
+        "电池级碳酸锂"
+      ]
+    }
+  }
 }

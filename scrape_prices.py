@@ -180,6 +180,35 @@ def fetch_material(material_id, source):
     return data
 
 
+def compute_position(price, low52w, high52w):
+    """计算价格在52周区间的位置（0-100）"""
+    if None in (price, low52w, high52w):
+        return None, None
+    rng = high52w - low52w
+    if rng <= 0:
+        return None, None
+    pct = round((price - low52w) / rng * 100, 1)
+    clamped = max(0, min(100, pct))
+    if clamped > 85:   label = "高位"
+    elif clamped > 65: label = "中高位"
+    elif clamped > 35: label = "中位"
+    elif clamped > 15: label = "中低位"
+    else:              label = "低位"
+    return clamped, label
+
+
+def compute_trend(monthly_pct):
+    """将月度涨跌幅转换为趋势描述"""
+    if monthly_pct is None:
+        return "震荡", 0
+    pct = round(monthly_pct, 1)
+    if pct > 3:     return "明显上涨", pct
+    if pct > 1:     return "小幅上涨", pct
+    if pct > -1:    return "震荡", pct
+    if pct > -3:    return "小幅下跌", pct
+    return "明显下跌", pct
+
+
 def generate_suggestion(price, low52w, high52w, monthly_pct):
     """根据价格在52周区间的位置和月趋势生成采购建议"""
     if None in (price, low52w, high52w):
@@ -203,8 +232,101 @@ def generate_suggestion(price, low52w, high52w, monthly_pct):
     return "观望", "flat"
 
 
+def generate_analysis(name, price, unit, low52w, high52w, monthly_pct):
+    """生成单个物料的完整分析"""
+    pos_pct, pos_label = compute_position(price, low52w, high52w)
+    trend_label, trend_val = compute_trend(monthly_pct)
+    suggestion, suggestion_type = generate_suggestion(
+        price, low52w, high52w, monthly_pct
+    )
+
+    analysis = {
+        "position": pos_label or "未知",
+        "positionPct": pos_pct,
+        "trendLabel": trend_label,
+        "trendPct": trend_val,
+        "suggestion": suggestion,
+        "suggestionType": suggestion_type,
+    }
+
+    # 生成摘要
+    parts = []
+    if pos_label and trend_label != "震荡":
+        parts.append(f"当前处于52周{pos_label}区间")
+    if trend_val != 0:
+        direction = "上涨" if trend_val > 0 else "下跌"
+        parts.append(f"本月{trend_label}（{trend_val:+.1f}%）")
+    parts.append(f"52周范围 {low52w:,}-{high52w:,}{unit}")
+
+    analysis["summary"] = "，".join(parts) + "。"
+
+    # 生成关键要点
+    pts = []
+    if pos_pct is not None:
+        if pos_pct > 80:
+            pts.append(f"价格处于{pos_pct:.0f}%分位，接近年度高位，追高风险较大")
+        elif pos_pct < 20:
+            pts.append(f"价格处于{pos_pct:.0f}%分位，接近年度低位，安全边际较高")
+
+    if trend_val > 3:
+        pts.append(f"近期涨势偏强（月{trend_val:+.1f}%），建议关注供需面和政策变化")
+    elif trend_val < -3:
+        pts.append(f"近期跌幅较大（月{trend_val:.1f}%），可能接近底部，关注反弹信号")
+
+    if pos_pct is not None and 30 <= pos_pct <= 70:
+        pts.append("价格处于中位区间，建议按需采购、控制合理库存")
+    elif pos_pct is not None and pos_pct > 70:
+        pts.append("建议优先消耗现有库存，等待价格回落再批量采购")
+    elif pos_pct is not None and pos_pct < 30:
+        pts.append("如有明确使用计划，可适当提前锁定部分用量")
+
+    analysis["keyPoints"] = pts
+    return analysis
+
+
+# 物料分组配置
+MATERIAL_GROUPS = {
+    "铝系材料":       ["alum", "adc12", "a356"],
+    "贵金属":         ["gold", "silver"],
+    "基础有色金属":   ["copper", "tin", "nickel", "cupb"],
+    "稀土 & 包材":    ["pnd", "dyfe", "pndOx", "terbium", "paper"],
+    "电池材料":       ["li", "fepo", "vc", "ncm", "djy", "graph"],
+}
+
+
+def generate_group_analysis(group_name, materials):
+    """生成分组综合分析"""
+    # 统计有建议的非观望品种
+    actions = {"up": [], "down": [], "flat": []}
+    for m in materials:
+        if m["suggestionType"] in actions:
+            actions[m["suggestionType"]].append(m["name"])
+
+    lines = []
+    if actions["up"]:
+        lines.append(f"关注买入：{'、'.join(actions['up'][:3])}")
+    if actions["down"]:
+        lines.append(f"暂缓/高位：{'、'.join(actions['down'][:3])}")
+    if not actions["up"] and not actions["down"]:
+        lines.append("该组物料整体平稳，建议按需采购。")
+
+    # 检测异常波动品种
+    alerts = []
+    for m in materials:
+        if m.get("chartTrend") and abs(m["chartTrend"] * 100) > 5:
+            direction = "涨" if m["chartTrend"] > 0 else "跌"
+            alerts.append(f"⚠️ {m['name']} 月{direction}{abs(m['chartTrend'])*100:.1f}%")
+
+    return {
+        "summary": " ".join(lines),
+        "alerts": alerts,
+        "buySignals": actions["up"],
+        "sellSignals": actions["down"],
+    }
+
+
 def update_data_json(results):
-    """更新 data.json"""
+    """更新 data.json（价格 + 分析自动生成）"""
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         config = json.load(f)
 
@@ -213,40 +335,66 @@ def update_data_json(results):
 
     for mat in config["materials"]:
         mid = mat["id"]
-        if mid not in results or not results[mid]:
-            continue
-        r = results[mid]
+        r = results.get(mid) if mid in results else None
 
-        if r.get("price") is not None:
+        if r and r.get("price") is not None:
             new_price = int(round(r["price"]))
             print(f"  {mat['name']}: {mat['price']} → {new_price} {r.get('unit', mat['unit'])}")
             mat["price"] = new_price
-        else:
+        elif r:
             print(f"  {mat['name']}: 保持 {mat['price']}")
 
-        if r.get("unit"):
+        if r and r.get("unit"):
             mat["unit"] = r["unit"]
-        if r.get("low52w") is not None:
+        if r and r.get("low52w") is not None:
             mat["low52w"] = int(round(r["low52w"]))
-        if r.get("high52w") is not None:
+        if r and r.get("high52w") is not None:
             mat["high52w"] = int(round(r["high52w"]))
 
-        mat["sourceName"] = "生意社"
-        mat["sourceUrl"] = "https://www.100ppi.com"
+        if r:
+            mat["sourceName"] = "生意社"
+            mat["sourceUrl"] = "https://www.100ppi.com"
+            if r.get("monthly_change_pct") is not None:
+                mat["chartTrend"] = round(r["monthly_change_pct"] / 100, 4)
 
-        sug, sug_type = generate_suggestion(
-            mat["price"], mat["low52w"], mat["high52w"],
-            r.get("monthly_change_pct")
+        # 为所有物料生成分析（包括非抓取品种）
+        monthly_pct = r.get("monthly_change_pct") if r else None
+        if mat.get("chartTrend") is not None and monthly_pct is None:
+            monthly_pct = mat["chartTrend"] * 100
+
+        analysis = generate_analysis(
+            mat["name"], mat["price"], mat["unit"],
+            mat["low52w"], mat["high52w"],
+            monthly_pct
         )
-        mat["suggestion"] = sug
-        mat["suggestionType"] = sug_type
+        mat["suggestion"] = analysis["suggestion"]
+        mat["suggestionType"] = analysis["suggestionType"]
+        mat["analysis"] = {
+            "position": analysis["position"],
+            "positionPct": analysis["positionPct"],
+            "trendLabel": analysis["trendLabel"],
+            "trendPct": analysis["trendPct"],
+            "summary": analysis["summary"],
+            "keyPoints": analysis["keyPoints"],
+        }
 
-        if r.get("monthly_change_pct") is not None:
-            mat["chartTrend"] = round(r["monthly_change_pct"] / 100, 4)
+        if mid in results and results[mid]:
+            updated += 1
+        elif r:
+            updated += 1
+        else:
+            print(f"  {mat['name']}: 分析已生成（价格未更新）")
 
-        updated += 1
+    # 生成分组分析
+    materials_by_id = {m["id"]: m for m in config["materials"]}
+    group_analysis = {}
+    for group_name, ids in MATERIAL_GROUPS.items():
+        group_mats = [materials_by_id[mid] for mid in ids if mid in materials_by_id]
+        if group_mats:
+            group_analysis[group_name] = generate_group_analysis(group_name, group_mats)
 
     config["meta"]["updateDate"] = today_str
+    config["groupAnalysis"] = group_analysis
     return config, updated
 
 
