@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updateDate": "2026-06-04",
+    "updateDate": "2026-06-05",
     "dataSource": "生意社基准价 (100ppi.com)",
     "note": "特种材料（ADC12/A356.2/紫铜棒/磷酸铁/VC/NCM/电解液/石墨/金属铽）生意社未覆盖，标注为参考价"
   },
@@ -9,9 +9,9 @@
       "id": "alum",
       "group": "铝系材料",
       "name": "汇总铝 / A00铝锭",
-      "price": 24470,
+      "price": 24223,
       "unit": "元/吨",
-      "low52w": 20137,
+      "low52w": 20193,
       "high52w": 25273,
       "suggestion": "高位观望",
       "suggestionType": "flat",
@@ -21,12 +21,11 @@
       "chartTrend": 0.0102,
       "analysis": {
         "position": "中高位",
-        "positionPct": 84.4,
+        "positionPct": 79.3,
         "trendLabel": "震荡",
         "trendPct": 1.0,
-        "summary": "本月震荡（+1.0%），52周范围 20,137-25,273元/吨。",
+        "summary": "本月震荡（+1.0%），52周范围 20,193-25,273元/吨。",
         "keyPoints": [
-          "价格处于84%分位，接近年度高位，追高风险较大",
           "建议优先消耗现有库存，等待价格回落再批量采购"
         ]
       }
@@ -86,7 +85,7 @@
       "id": "gold",
       "group": "贵金属",
       "name": "金 99.99%",
-      "price": 981,
+      "price": 975,
       "unit": "元/克",
       "low52w": 762,
       "high52w": 1243,
@@ -95,13 +94,13 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.012,
-      "chartTrend": -0.0025,
+      "chartTrend": -0.0085,
       "analysis": {
         "position": "中位",
-        "positionPct": 45.5,
+        "positionPct": 44.3,
         "trendLabel": "震荡",
-        "trendPct": -0.2,
-        "summary": "本月震荡（-0.2%），52周范围 762-1,243元/克。",
+        "trendPct": -0.8,
+        "summary": "本月震荡（-0.8%），52周范围 762-1,243元/克。",
         "keyPoints": [
           "价格处于中位区间，建议按需采购、控制合理库存"
         ]
@@ -111,23 +110,24 @@
       "id": "silver",
       "group": "贵金属",
       "name": "银 99.99%",
-      "price": 18153,
+      "price": 17684,
       "unit": "元/千克",
-      "low52w": 8182,
+      "low52w": 8443,
       "high52w": 30645,
       "suggestion": "观望",
       "suggestionType": "flat",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": -0.0138,
+      "chartTrend": -0.0393,
       "analysis": {
         "position": "中位",
-        "positionPct": 44.4,
-        "trendLabel": "小幅下跌",
-        "trendPct": -1.4,
-        "summary": "当前处于52周中位区间，本月小幅下跌（-1.4%），52周范围 8,182-30,645元/千克。",
+        "positionPct": 41.6,
+        "trendLabel": "明显下跌",
+        "trendPct": -3.9,
+        "summary": "当前处于52周中位区间，本月明显下跌（-3.9%），52周范围 8,443-30,645元/千克。",
         "keyPoints": [
+          "近期跌幅较大（月-3.9%），可能接近底部，关注反弹信号",
           "价格处于中位区间，建议按需采购、控制合理库存"
         ]
       }
@@ -136,7 +136,7 @@
       "id": "copper",
       "group": "基础有色金属",
       "name": "铜",
-      "price": 106657,
+      "price": 105340,
       "unit": "元/吨",
       "low52w": 78055,
       "high52w": 108573,
@@ -145,15 +145,15 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.012,
-      "chartTrend": 0.0173,
+      "chartTrend": 0.0047,
       "analysis": {
         "position": "高位",
-        "positionPct": 93.7,
-        "trendLabel": "小幅上涨",
-        "trendPct": 1.7,
-        "summary": "当前处于52周高位区间，本月小幅上涨（+1.7%），52周范围 78,055-108,573元/吨。",
+        "positionPct": 89.4,
+        "trendLabel": "震荡",
+        "trendPct": 0.5,
+        "summary": "本月震荡（+0.5%），52周范围 78,055-108,573元/吨。",
         "keyPoints": [
-          "价格处于94%分位，接近年度高位，追高风险较大",
+          "价格处于89%分位，接近年度高位，追高风险较大",
           "建议优先消耗现有库存，等待价格回落再批量采购"
         ]
       }
@@ -162,25 +162,25 @@
       "id": "tin",
       "group": "基础有色金属",
       "name": "锡",
-      "price": 447020,
+      "price": 442660,
       "unit": "元/吨",
-      "low52w": 250370,
+      "low52w": 255360,
       "high52w": 447020,
       "suggestion": "高位观望",
       "suggestionType": "down",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.01,
-      "chartTrend": 0.0519,
+      "chartTrend": 0.0417,
       "analysis": {
         "position": "高位",
-        "positionPct": 100,
+        "positionPct": 97.7,
         "trendLabel": "明显上涨",
-        "trendPct": 5.2,
-        "summary": "当前处于52周高位区间，本月明显上涨（+5.2%），52周范围 250,370-447,020元/吨。",
+        "trendPct": 4.2,
+        "summary": "当前处于52周高位区间，本月明显上涨（+4.2%），52周范围 255,360-447,020元/吨。",
         "keyPoints": [
-          "价格处于100%分位，接近年度高位，追高风险较大",
-          "近期涨势偏强（月+5.2%），建议关注供需面和政策变化",
+          "价格处于98%分位，接近年度高位，追高风险较大",
+          "近期涨势偏强（月+4.2%），建议关注供需面和政策变化",
           "建议优先消耗现有库存，等待价格回落再批量采购"
         ]
       }
@@ -189,24 +189,24 @@
       "id": "nickel",
       "group": "基础有色金属",
       "name": "镍",
-      "price": 143767,
+      "price": 140833,
       "unit": "元/吨",
       "low52w": 115050,
       "high52w": 153933,
-      "suggestion": "高位观望",
+      "suggestion": "观望",
       "suggestionType": "flat",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": 0.0001,
+      "chartTrend": -0.0203,
       "analysis": {
         "position": "中高位",
-        "positionPct": 73.9,
-        "trendLabel": "震荡",
-        "trendPct": 0.0,
-        "summary": "52周范围 115,050-153,933元/吨。",
+        "positionPct": 66.3,
+        "trendLabel": "小幅下跌",
+        "trendPct": -2.0,
+        "summary": "当前处于52周中高位区间，本月小幅下跌（-2.0%），52周范围 115,050-153,933元/吨。",
         "keyPoints": [
-          "建议优先消耗现有库存，等待价格回落再批量采购"
+          "价格处于中位区间，建议按需采购、控制合理库存"
         ]
       }
     },
@@ -340,7 +340,7 @@
       "id": "paper",
       "group": "稀土 & 包材",
       "name": "瓦楞原纸",
-      "price": 2882,
+      "price": 2901,
       "unit": "元/吨",
       "low52w": 2560,
       "high52w": 3240,
@@ -349,13 +349,13 @@
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.006,
-      "chartTrend": 0.0035,
+      "chartTrend": 0.0101,
       "analysis": {
         "position": "中位",
-        "positionPct": 47.4,
+        "positionPct": 50.1,
         "trendLabel": "震荡",
-        "trendPct": 0.3,
-        "summary": "本月震荡（+0.3%），52周范围 2,560-3,240元/吨。",
+        "trendPct": 1.0,
+        "summary": "本月震荡（+1.0%），52周范围 2,560-3,240元/吨。",
         "keyPoints": [
           "价格处于中位区间，建议按需采购、控制合理库存"
         ]
@@ -365,24 +365,24 @@
       "id": "li",
       "group": "电池材料",
       "name": "电池级碳酸锂",
-      "price": 174000,
+      "price": 166000,
       "unit": "元/吨",
       "low52w": 59900,
       "high52w": 199000,
-      "suggestion": "高位观望",
-      "suggestionType": "flat",
+      "suggestion": "暂缓采购",
+      "suggestionType": "down",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
-      "chartTrend": -0.0225,
+      "chartTrend": -0.0674,
       "analysis": {
         "position": "中高位",
-        "positionPct": 82.0,
-        "trendLabel": "小幅下跌",
-        "trendPct": -2.2,
-        "summary": "当前处于52周中高位区间，本月小幅下跌（-2.2%），52周范围 59,900-199,000元/吨。",
+        "positionPct": 76.3,
+        "trendLabel": "明显下跌",
+        "trendPct": -6.7,
+        "summary": "当前处于52周中高位区间，本月明显下跌（-6.7%），52周范围 59,900-199,000元/吨。",
         "keyPoints": [
-          "价格处于82%分位，接近年度高位，追高风险较大",
+          "近期跌幅较大（月-6.7%），可能接近底部，关注反弹信号",
           "建议优先消耗现有库存，等待价格回落再批量采购"
         ]
       }
@@ -530,9 +530,7 @@
     },
     "基础有色金属": {
       "summary": "暂缓/高位：铜、锡",
-      "alerts": [
-        "⚠️ 锡 月涨5.2%"
-      ],
+      "alerts": [],
       "buySignals": [],
       "sellSignals": [
         "铜",
@@ -548,10 +546,14 @@
       "sellSignals": []
     },
     "电池材料": {
-      "summary": "该组物料整体平稳，建议按需采购。",
-      "alerts": [],
+      "summary": "暂缓/高位：电池级碳酸锂",
+      "alerts": [
+        "⚠️ 电池级碳酸锂 月跌6.7%"
+      ],
       "buySignals": [],
-      "sellSignals": []
+      "sellSignals": [
+        "电池级碳酸锂"
+      ]
     }
   }
 }
