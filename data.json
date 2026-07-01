@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updateDate": "2026-06-30",
+    "updateDate": "2026-07-01",
     "dataSource": "生意社基准价 (100ppi.com)",
     "note": "特种材料（ADC12/A356.2/紫铜棒/磷酸铁/VC/NCM/电解液/石墨/金属铽）生意社未覆盖，标注为参考价"
   },
@@ -9,7 +9,7 @@
       "id": "alum",
       "group": "铝系材料",
       "name": "汇总铝 / A00铝锭",
-      "price": 22897,
+      "price": 22520,
       "unit": "元/吨",
       "low52w": 20493,
       "high52w": 25273,
@@ -21,7 +21,7 @@
       "chartTrend": -0.0548,
       "analysis": {
         "position": "中位",
-        "positionPct": 50.3,
+        "positionPct": 42.4,
         "trendLabel": "明显下跌",
         "trendPct": -5.5,
         "summary": "当前处于52周中位区间，本月明显下跌（-5.5%），52周范围 20,493-25,273元/吨。",
@@ -86,7 +86,7 @@
       "id": "gold",
       "group": "贵金属",
       "name": "金 99.99%",
-      "price": 888,
+      "price": 870,
       "unit": "元/克",
       "low52w": 762,
       "high52w": 1243,
@@ -98,7 +98,7 @@
       "chartTrend": -0.0966,
       "analysis": {
         "position": "中低位",
-        "positionPct": 26.2,
+        "positionPct": 22.5,
         "trendLabel": "明显下跌",
         "trendPct": -9.7,
         "summary": "当前处于52周中低位区间，本月明显下跌（-9.7%），52周范围 762-1,243元/克。",
@@ -112,7 +112,7 @@
       "id": "silver",
       "group": "贵金属",
       "name": "银 99.99%",
-      "price": 14186,
+      "price": 14047,
       "unit": "元/千克",
       "low52w": 8680,
       "high52w": 30645,
@@ -124,7 +124,7 @@
       "chartTrend": -0.2293,
       "analysis": {
         "position": "中低位",
-        "positionPct": 25.1,
+        "positionPct": 24.4,
         "trendLabel": "明显下跌",
         "trendPct": -22.9,
         "summary": "当前处于52周中低位区间，本月明显下跌（-22.9%），52周范围 8,680-30,645元/千克。",
@@ -138,7 +138,7 @@
       "id": "copper",
       "group": "基础有色金属",
       "name": "铜",
-      "price": 102427,
+      "price": 102220,
       "unit": "元/吨",
       "low52w": 78055,
       "high52w": 108573,
@@ -150,7 +150,7 @@
       "chartTrend": -0.0231,
       "analysis": {
         "position": "中高位",
-        "positionPct": 79.9,
+        "positionPct": 79.2,
         "trendLabel": "小幅下跌",
         "trendPct": -2.3,
         "summary": "当前处于52周中高位区间，本月小幅下跌（-2.3%），52周范围 78,055-108,573元/吨。",
@@ -163,7 +163,7 @@
       "id": "tin",
       "group": "基础有色金属",
       "name": "锡",
-      "price": 388650,
+      "price": 387820,
       "unit": "元/吨",
       "low52w": 262070,
       "high52w": 447020,
@@ -175,7 +175,7 @@
       "chartTrend": -0.0854,
       "analysis": {
         "position": "中高位",
-        "positionPct": 68.4,
+        "positionPct": 68.0,
         "trendLabel": "明显下跌",
         "trendPct": -8.5,
         "summary": "当前处于52周中高位区间，本月明显下跌（-8.5%），52周范围 262,070-447,020元/吨。",
@@ -189,25 +189,25 @@
       "id": "nickel",
       "group": "基础有色金属",
       "name": "镍",
-      "price": 129317,
+      "price": 125467,
       "unit": "元/吨",
       "low52w": 115050,
       "high52w": 153933,
-      "suggestion": "观望",
-      "suggestionType": "flat",
+      "suggestion": "底部关注",
+      "suggestionType": "up",
       "sourceName": "生意社",
       "sourceUrl": "https://www.100ppi.com",
       "chartVolatility": 0.015,
       "chartTrend": -0.1004,
       "analysis": {
-        "position": "中位",
-        "positionPct": 36.7,
+        "position": "中低位",
+        "positionPct": 26.8,
         "trendLabel": "明显下跌",
         "trendPct": -10.0,
-        "summary": "当前处于52周中位区间，本月明显下跌（-10.0%），52周范围 115,050-153,933元/吨。",
+        "summary": "当前处于52周中低位区间，本月明显下跌（-10.0%），52周范围 115,050-153,933元/吨。",
         "keyPoints": [
           "近期跌幅较大（月-10.0%），可能接近底部，关注反弹信号",
-          "价格处于中位区间，建议按需采购、控制合理库存"
+          "如有明确使用计划，可适当提前锁定部分用量"
         ]
       }
     },
@@ -240,7 +240,7 @@
       "id": "pnd",
       "group": "稀土 & 包材",
       "name": "镨钕金属",
-      "price": 890000,
+      "price": 895000,
       "unit": "元/吨",
       "low52w": 560000,
       "high52w": 1110000,
@@ -252,7 +252,7 @@
       "chartTrend": 0.0627,
       "analysis": {
         "position": "中位",
-        "positionPct": 60.0,
+        "positionPct": 60.9,
         "trendLabel": "明显上涨",
         "trendPct": 6.3,
         "summary": "当前处于52周中位区间，本月明显上涨（+6.3%），52周范围 560,000-1,110,000元/吨。",
@@ -292,7 +292,7 @@
       "id": "pndOx",
       "group": "稀土 & 包材",
       "name": "镨钕氧化物",
-      "price": 737500,
+      "price": 740000,
       "unit": "元/吨",
       "low52w": 445000,
       "high52w": 895000,
@@ -303,11 +303,11 @@
       "chartVolatility": 0.016,
       "chartTrend": 0.0727,
       "analysis": {
-        "position": "中位",
-        "positionPct": 65.0,
+        "position": "中高位",
+        "positionPct": 65.6,
         "trendLabel": "明显上涨",
         "trendPct": 7.3,
-        "summary": "当前处于52周中位区间，本月明显上涨（+7.3%），52周范围 445,000-895,000元/吨。",
+        "summary": "当前处于52周中高位区间，本月明显上涨（+7.3%），52周范围 445,000-895,000元/吨。",
         "keyPoints": [
           "近期涨势偏强（月+7.3%），建议关注供需面和政策变化",
           "价格处于中位区间，建议按需采购、控制合理库存"
@@ -343,7 +343,7 @@
       "id": "paper",
       "group": "稀土 & 包材",
       "name": "瓦楞原纸",
-      "price": 3084,
+      "price": 3094,
       "unit": "元/吨",
       "low52w": 2560,
       "high52w": 3240,
@@ -355,7 +355,7 @@
       "chartTrend": 0.0738,
       "analysis": {
         "position": "中高位",
-        "positionPct": 77.1,
+        "positionPct": 78.5,
         "trendLabel": "明显上涨",
         "trendPct": 7.4,
         "summary": "当前处于52周中高位区间，本月明显上涨（+7.4%），52周范围 2,560-3,240元/吨。",
@@ -369,9 +369,9 @@
       "id": "li",
       "group": "电池材料",
       "name": "电池级碳酸锂",
-      "price": 149000,
+      "price": 156000,
       "unit": "元/吨",
-      "low52w": 60533,
+      "low52w": 61467,
       "high52w": 199000,
       "suggestion": "观望",
       "suggestionType": "flat",
@@ -380,11 +380,11 @@
       "chartVolatility": 0.015,
       "chartTrend": -0.1629,
       "analysis": {
-        "position": "中位",
-        "positionPct": 63.9,
+        "position": "中高位",
+        "positionPct": 68.7,
         "trendLabel": "明显下跌",
         "trendPct": -16.3,
-        "summary": "当前处于52周中位区间，本月明显下跌（-16.3%），52周范围 60,533-199,000元/吨。",
+        "summary": "当前处于52周中高位区间，本月明显下跌（-16.3%），52周范围 61,467-199,000元/吨。",
         "keyPoints": [
           "近期跌幅较大（月-16.3%），可能接近底部，关注反弹信号",
           "价格处于中位区间，建议按需采购、控制合理库存"
@@ -541,12 +541,14 @@
       "sellSignals": []
     },
     "基础有色金属": {
-      "summary": "该组物料整体平稳，建议按需采购。",
+      "summary": "关注买入：镍",
       "alerts": [
         "⚠️ 锡 月跌8.5%",
         "⚠️ 镍 月跌10.0%"
       ],
-      "buySignals": [],
+      "buySignals": [
+        "镍"
+      ],
       "sellSignals": []
     },
     "稀土 & 包材": {
